@@ -1,0 +1,22 @@
+[
+    {
+        "name": "BDG-001",
+        "description": "Arizona Rangers #7",
+        "imageurl": "images/badgeimages/BDG-001.png"
+    },
+    {
+        "name": "BDG-002",
+        "description": "U.S. Marshal",
+        "imageurl": "images/badgeimages/BDG-002.png"
+    },
+    {
+        "name": "BDG-003",
+        "description": "U.S. Deputy Marshal",
+        "imageurl": "images/badgeimages/BDG-003.png"
+    },
+    {
+        "name": "BDG-004",
+        "description": "Texas Ranger",
+        "imageurl": "images/badgeimages/BDG-004.png"
+    }
+]
