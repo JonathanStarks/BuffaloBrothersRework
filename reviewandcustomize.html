@@ -12,8 +12,9 @@
     <meta property="og:image" content="images/logo.jpg" />
     <meta property="og:type" content="website" />
     <meta property="og:description" content="Buffalo Brothers Cowboy Store is your source for old west style pistol grips and accessories." />
+    <!-- PayPal developer sandbox id, not a real account -->
+    <script defer src="https://www.paypal.com/sdk/js?client-id=Ac3CYSqt8Sf2Yvj_SBZ6B8LFm7fZjgVp-N_fBmEJljZI9aSVXIUpeUP0T30Vqq6s-SeT1phKw2b6T650&currency=USD"></script>
     <script defer src="scripts/bbScripts.js"></script>
-    <!-- <script src="https://www.paypal.com/sdk/js?client-id=YOUR_CLIENT_ID&currency=USD"></script> -->
     <script defer src="scripts/checkoutScripts.js"></script>
 </head>
 <body>
@@ -55,7 +56,6 @@
             <div>
                 <img src="images/cart.png" alt="shopping cart">
                 <div id="cart_summary"></div>
-                <div id="paypal_button"></div>
             </div>
         </ul>
     </section>
@@ -73,7 +73,9 @@
 
             </div>
         </section>
-        <button id="go_to_payment">Finish and pay</button>
+        <hr>
+
+        <div id="paypal_button_section"></div>
     </section>
     </main>
 </body>

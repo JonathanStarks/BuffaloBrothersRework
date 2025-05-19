@@ -1,5 +1,5 @@
 // This is the shopping cart
-let cart = JSON.parse(localStorage.getItem("shopping_cart")) || [];
+const cart = JSON.parse(localStorage.getItem("shopping_cart")) || [];
 
 // This is the lookup table, it will make changing the base price of item types 
 // easier than having to edit each item in the json file
@@ -164,8 +164,9 @@ function update_cart()
     {
         // This creates the total of the prices for the items that are in the cart
         const p = document.createElement("p");
-        const item_total = item.price * item.quantity
-        p.textContent = `${item.name} - $${item.price.toFixed(2)} x ${item.quantity}`;
+        const final_price = item.calculated_price || item.price;
+        const item_total = final_price * item.quantity;
+        p.textContent = `${item.name} - $${final_price.toFixed(2)} x ${item.quantity}`;
         summary.appendChild(p);
 
         // Has an image to go with the item in the small cart below the menu
