@@ -33,6 +33,18 @@ store_menu.addEventListener("click", function() {
     }
 });
 
+// This will reduce the code that I need to write by letting each section use the code that hides and shows the contained text
+document.querySelectorAll(".about_section").forEach(section => {
+    section.addEventListener("click", () => {
+        const target = section.getAttribute("about_info");
+        const targetElement = document.getElementById(target);
+        if (targetElement)
+        {
+            targetElement.classList.toggle("hidden");
+        }
+    });
+});
+
 // This function determines what to set the base price for the item to 
 // depending on its price in the lookup table
 function find_baseprice(id)
@@ -197,7 +209,7 @@ function update_cart()
 
     // This actually adds the total to the web page
     const total_line = document.createElement("p");
-    total_line.innerHTML = `<strong>Total: $${((cart_total + 12.5)).toFixed(2)}</strong>`;
+    total_line.innerHTML = `<strong>SubTotal: $${((cart_total)).toFixed(2)}</strong>`;
     summary.appendChild(total_line);
     
     // Below the total for the cart will be the button to checkout, it will take the user to the 
@@ -210,3 +222,4 @@ function update_cart()
     checkoutButton.style.padding = "2px";
     summary.appendChild(checkoutButton);
 }
+

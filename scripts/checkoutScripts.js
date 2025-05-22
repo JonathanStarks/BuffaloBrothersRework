@@ -103,6 +103,7 @@ function update_cart_total()
 
     const shipping = 12.5;
     const total = subtotal + shipping;
+    document.getElementById("cart_total").innerHTML = `Items: $${subtotal.toFixed(2)}`;
     document.getElementById("working_price").innerHTML = `Total: $${total.toFixed(2)}`;
 }
 

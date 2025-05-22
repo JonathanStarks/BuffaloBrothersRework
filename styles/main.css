@@ -4,11 +4,16 @@
     padding: 0;
     list-style: none;
 }
+.nav-links li:hover
+{
+    background-color: #ffffff;
+}
 .nav-links a
 {
     color: black;
     text-decoration: none;
-    min-width: 30%;
+    min-width: auto;
+    display: block;
 }
 .nav-links li
 {
@@ -20,6 +25,10 @@
 {
     display: none;
 }
+.expand_section
+{
+    display: hidden;
+}
 #store_submenu
 {
     background-color: lightgray;
@@ -27,7 +36,6 @@
     margin: 0;
     padding: 0px;
 }
-
 .navbar
 {
     width: 30%;
@@ -59,7 +67,16 @@
     margin: 0 auto;
     padding: 1lh;
 }
-
+.about_section
+{
+    outline: 1px solid black;
+    margin: 1%;
+    background-color: #dcdcdc;
+}
+.about_section:hover
+{
+    background-color: #bcbcbc;
+}
 #items_for_sale
 {
     padding: 1%;
