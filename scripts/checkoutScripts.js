@@ -126,6 +126,7 @@ function getOptionsHTML(id, index)
                 <option value="ivory" data-price="0">Ivory</option>
                 <option value="old_ivory" data-price="0">Old Ivory</option>
                 <option value="black" data-price="0">Black</option>
+                <option value="john_yellow" data-price="0">John Wayne Yellow</option>
             </select>
         </label>
         <br>
@@ -135,7 +136,7 @@ function getOptionsHTML(id, index)
                 <option value="antiqued" data-price="0">Antiqued</option>
                 <option value="heavy_antiqued" data-price="0">Heavy Antiqued</option>
                 <option value="with_black" data-price="0">With Black</option>
-                <option value="none" data-price="0">Plane</option>
+                <option value="none" data-price="0">Plain</option>
             </select>
         </label>
         `;

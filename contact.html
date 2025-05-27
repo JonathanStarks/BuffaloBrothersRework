@@ -59,19 +59,24 @@
     <section class="hero">
         <img id="buffalogo" src="images/buffalobrotherslogo.png" alt="buffalogo">
         <hr>
-        <h3>Feel free to reach out</h3>
+        <h2>Feel free to reach out</h2>
+        <hr>
+        <div class="address">
+          <h2>Address</h2>
+          <p>Lois & Bruce Daly<br>Buffalo Brothers Cowboy Store<br>8315 East Quill St.<br>Mesa, Arizona 85207<br>United States of America</p>
+        </div>
         <div class="contact_box">
             <label for="subject">Subject: </label>
-            <input type="text" placeholder="Hello" name="subject">
+            <input type="text" placeholder="Hello" name="subject" required>
             <br>
             <label for="message">Message: </label>
-            <input type="text" placeholder="As per my last email" name="message">
+            <textarea name="message" id="message" rows="10" cols="30" ></textarea>
             <br>
             <label for="first_name">First Name: </label>
-            <input type="text" placeholder="John" name="first_name">
+            <input type="text" placeholder="John" name="first_name" required>
             <br>
             <label for="last_name">Last Name: </label>
-            <input type="text" placeholder="Doe" name="last_name">
+            <input type="text" placeholder="Doe" name="last_name" required>
             <br>
             <label for="phone">Phone Number: </label>
             <input type="tel" placeholder="xxx-xxx-xxxx" name="phone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}">

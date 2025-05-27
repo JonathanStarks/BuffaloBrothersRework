@@ -5,7 +5,7 @@ const cart = JSON.parse(localStorage.getItem("shopping_cart")) || [];
 // easier than having to edit each item in the json file
 const base_price_by_type =
 {
-    "1911": 75.00,
+    "1911": 79.00,
     "BDG": 19.95,
     "SAAP": 0
 };

@@ -82,7 +82,27 @@
     padding: 1%;
     max-width: 100%;
 }
-
+.contact_box
+{
+    background-color: #eeeeee;
+    outline: 1px solid black;
+    padding: 5px;
+    text-align: right;
+    max-width: 50%;
+    display: block;
+}
+.address
+{
+    max-width: 50%;
+    background-color: #eeeeee;
+    outline: 1px solid black;
+    padding: 5px;
+}
+.contact_box input, textarea
+{
+    min-width: 50%;
+    resize: none;
+}
 body
 {
     margin: 0% auto;
