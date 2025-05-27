@@ -87,21 +87,20 @@
     background-color: #eeeeee;
     outline: 1px solid black;
     padding: 5px;
-    text-align: right;
-    max-width: 50%;
-    display: block;
+    float: right;
+    width: 45%;
+    height: 170px;
+    box-shadow: 0px 0px 8px black;
 }
 .address
 {
-    max-width: 50%;
+    height: 170px;
     background-color: #eeeeee;
     outline: 1px solid black;
     padding: 5px;
-}
-.contact_box input, textarea
-{
-    min-width: 50%;
-    resize: none;
+    float: left;
+    width: 45%;
+    box-shadow: 0px 0px 8px black;
 }
 body
 {
@@ -137,4 +136,9 @@ footer
     padding: 10px;
     color: #bcbcbc;
     text-decoration: none;
+}
+.footer-links a:hover
+{
+    background-color: #eeeeee;
+    color: black;
 }
