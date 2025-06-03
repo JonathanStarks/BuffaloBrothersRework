@@ -2,11 +2,15 @@
 const cart = JSON.parse(localStorage.getItem("shopping_cart")) || [];
 
 // This is the lookup table, it will make changing the base price of item types 
-// easier than having to edit each item in the json file
+// easier than having to edit each item in the json file, but I will need to change
+// this to be located in the backend so it won't be accessable from the frontend
 const base_price_by_type =
 {
     "1911": 79.00,
     "BDG": 19.95,
+    // The button price below will need to be different, not all buttons will be the 
+    // same price.
+    "BTN": 1.00,
     "SAAP": 0
 };
 
@@ -129,8 +133,9 @@ function load_items(json_file)
 
                     // This saves the cart to the local storage
                     localStorage.setItem("shopping_cart", JSON.stringify(cart));
-                    alert(`${product.name} was added to the cart.`);
+                    show_slide_message(`${product.name} was added to the cart.`);
                     location.reload();
+
                 });
                 
 
@@ -145,6 +150,19 @@ function load_items(json_file)
             });
         })
         .catch(error => console.error("Error loading the json file:", error));
+}
+
+// This function shows a popup when an item is added to the cart
+function show_slide_message(message)
+{
+    const popup = document.getElementById("popup");
+    popup.textContent = message;
+
+    popup.classList.add("show");
+
+    setTimeout(() => {
+        popup.classList.remove("show");
+    }, 3000 + 500);
 }
 
 // This code will run the load items function only when the items for sale element and the cat parameter is in the url

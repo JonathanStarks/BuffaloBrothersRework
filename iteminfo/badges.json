@@ -18,5 +18,15 @@
         "name": "BDG-004",
         "description": "Texas Ranger",
         "imageurl": "images/badgeimages/BDG-004.png"
+    },
+    {
+        "name": "BDG-005",
+        "description": "U.S. Deputy Marshal",
+        "imageurl": "images/badgeimages/BDG-005.png"
+    },
+    {
+        "name": "BDG-006",
+        "description": "U.S. Bureau of Indian Affairs - Police",
+        "imageurl": "images/badgeimages/BDG-006.png"
     }
 ]
