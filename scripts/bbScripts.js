@@ -156,7 +156,7 @@ function load_items_by_category(categoryName)
                 // This will show a message that slide into the screen informing the user that the item was added to their cart.
                 localStorage.setItem("shopping_cart", JSON.stringify(cart));
                 show_slide_message(`${product.Name} was added to the cart.`);
-                location.reload();
+                update_cart();
             });
 
             // Actually adds the things to the website
@@ -177,11 +177,13 @@ function show_slide_message(message)
     const popup = document.getElementById("popup");
     popup.textContent = message;
 
+    popup.classList.remove("show");
+    void popup.offsetWidth;
     popup.classList.add("show");
 
     setTimeout(() => {
         popup.classList.remove("show");
-    }, 3000 + 500);
+    }, 3000);
 }
 
 // This code will run the load items function only when the items for sale element and the cat parameter is in the url
@@ -232,7 +234,7 @@ function update_cart()
             cart.splice(index, 1);
             localStorage.setItem("shopping_cart", JSON.stringify(cart));
 
-            location.reload();
+            update_cart();
         });
         summary.appendChild(deleteOneButton);
 

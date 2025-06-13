@@ -155,6 +155,39 @@ function getOptionsHTML(id, index)
         </label>
         `;
     }
+
+    // If the id corosponds to a concho, these options will show
+    else if (id.startsWith("CON"))
+    {
+        return `
+        <label> Back Fastener:
+            <select id="backing_${index}">
+                <option value="flatback" data-price="0">Flatback/Smash Rivet</option>
+                <option value="pushnut" data-price="0">Pushnut</option>
+            </select>
+        </label>
+        `;
+    }
+
+    // If the id is for a watch fob, these options will show
+    else if (id.startsWith("FOB"))
+    {
+        return `
+        <label> Strap:
+            <select id="strap_${index}">
+                <option value="no" data-price="0">No (+$0)</option>                
+                <option value="yes" data-price="5">Yes (+5$)</option>
+            </select>
+        </label>
+        <br>
+        <label> Finish:
+            <select id="finish_${index}">
+                <option value="tin" data-price="0">Tin (+$0)</option>
+                <option value="gold" data-price="5">Gold Plated (+$5)</option>
+            </select>
+        </label>
+        `;
+    }
     return "";
 }
 
@@ -180,7 +213,16 @@ cart.forEach((item, index) =>
     }
     else if (item.id.startsWith("BDG"))
     {
-        selected_options.finish = document.getElementById("finish_" + index).value
+        selected_options.finish = document.getElementById("finish_" + index).value;
+    }
+    else if (item.id.startsWith("CON"))
+    {
+        selected_options.backing = document.getElementById("backing_" + index).value;
+    }
+    else if (item.id.startsWith("FOB"))
+    {
+        selected_options.strap = document.getElementById("strap_" + index).value;
+        selected_options.finish = document.getElementById ("finish_" + index).value;
     }
 
     item.options = selected_options;
@@ -279,6 +321,11 @@ function get_additional_cost(id, options)
     {
         if (options.finish === "polished") premium_cost += 4;
         if (options.finish === "gold") premium_cost += 15;
+    }
+    else if (id.startsWith("FOB"))
+    {
+        if (options.strap === "yes") premium_cost += 5;
+        if (options.finish === "gold") premium_cost += 5;
     }
 
     return premium_cost;

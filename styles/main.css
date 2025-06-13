@@ -124,11 +124,17 @@ main
 }
 .popup
 {
-    background-color: dimgray;
+    outline: 1px solid black;
+    background-color: #bcbcbc;
     position: fixed;
-    right: -300px;
+    right: -307px;
     transition: right 0.5s ease;
     z-index: 1000;
+    font-size: larger;
+    padding: 3px;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 .popup.show
 {
