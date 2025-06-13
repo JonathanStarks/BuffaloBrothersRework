@@ -5,7 +5,7 @@ let total = 0;
 // For every different item in the cart this should make a new section to select the styles
 cart.forEach((item, index) => 
 {
-    const optionsHTML = getOptionsHTML(item.name, index);
+    const optionsHTML = getOptionsHTML(item.id, index);
     const itemDiv = document.createElement("div");
     itemDiv.innerHTML = `
     <hr>
@@ -173,12 +173,12 @@ cart.forEach((item, index) =>
     // An empty object to store the information about the items in the cart
     const selected_options = {};
 
-    if (item.name.startsWith("1911"))
+    if (item.id.startsWith("1911"))
     {
         selected_options.texture = document.getElementById("color_" + index).value;
         selected_options.finish = document.getElementById("finish_" + index).value;
     }
-    else if (item.name.startsWith("BDG"))
+    else if (item.id.startsWith("BDG"))
     {
         selected_options.finish = document.getElementById("finish_" + index).value
     }

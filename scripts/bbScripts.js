@@ -1,19 +1,6 @@
 // This is the shopping cart
 const cart = JSON.parse(localStorage.getItem("shopping_cart")) || [];
 
-// This is the lookup table, it will make changing the base price of item types 
-// easier than having to edit each item in the json file, but I will need to change
-// this to be located in the backend so it won't be accessable from the frontend
-const base_price_by_type =
-{
-    "1911": 79.00,
-    "BDG": 19.95,
-    // The button price below will need to be different, not all buttons will be the 
-    // same price.
-    "BTN": 1.00,
-    "SAAP": 0
-};
-
 // Runs the update cart function
 update_cart();
 
@@ -70,86 +57,118 @@ function find_baseprice(id)
     return 0;
 }
 
-// For the shop pages I want to have each of the items in a json file and then when the button is clicked the corosponding items will be loaded.
-function load_items(json_file)
+// This will be the google sheet that the item info comes from
+const sheet_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTmc0A0mQd3XZFCgCUQZV6S-zV8OAN0nz8v2YKTFhnbPc2t5ujOkoNra7MMDKEnTnuB3XxfEy2z7QVM/pub?gid=0&single=true&output=csv";
+
+// This function uses the info from the google sheet and interperets it for the website to use
+function load_product_info_sheets(sheet_url, callback)
 {
-    // This will go through the json file and make sections for each of the items there
-    fetch(`iteminfo/${json_file}`)
-        .then(Response => Response.json())
-        .then(data => {
-            const list = document.getElementById("items_for_sale");
-
-            data.forEach(product => 
+    fetch(sheet_url)
+        .then(res => res.text())
+        .then(csv => 
+        {
+            const rows = csv.trim().split('\n').map(row => row.split(','));
+            const headers = rows.shift().map(h => h.trim());
+            const products = rows.map(row => 
             {
-                // This is the container for the item and the style of it
-                const container = document.createElement("div");
-                container.style.marginBottom = "20px";
-                container.style.width = "100%";
-
-                // This is the image of the item
-                const img = document.createElement("img");
-                img.src = product.imageurl;
-                img.alt = product.name;
-                img.style.width = "150px";
-
-                // This is the product name, price, and description
-                const name = document.createElement("h2");
-                name.textContent = product.name;
-
-                const description = document.createElement("p");
-                description.textContent = product.description;
-
-                const price = document.createElement("p");
-                price.textContent = `$${parseFloat(find_baseprice(product.name)).toFixed(2)}`;
-
-                const horizontal = document.createElement("hr");
-
-                // This creates the button for the item so the user can select the item
-                const buy_it = document.createElement("button");
-                buy_it.textContent = "Add to cart";
-
-                buy_it.addEventListener("click", () => 
+                const item = {};
+                row.forEach((val, i) => 
                 {
-                    const item =
-                    {
-                        id: product.name,
-                        name: product.name,
-                        price: find_baseprice(product.name),
-                        imageurl: product.imageurl,
-                        quantity: 1,
-                        options: {}
-                    }
-
-                    // Checks if the item is already in the cart, if it is then the quantity will increase
-                    const dupe_item = cart.find(i => i.id === item.name);
-                    if (dupe_item)
-                    {
-                        dupe_item.quantity += 1;
-                    }
-                    else
-                    {
-                        cart.push(item);
-                    }
-
-                    // This saves the cart to the local storage
-                    localStorage.setItem("shopping_cart", JSON.stringify(cart));
-                    show_slide_message(`${product.name} was added to the cart.`);
-                    location.reload();
-
+                    item[headers[i]] = val?.trim();
                 });
-                
-
-                // Actually adds the items to the site
-                container.appendChild(horizontal)
-                container.appendChild(name);
-                container.appendChild(img);
-                container.appendChild(description);
-                container.appendChild(price);
-                container.appendChild(buy_it);
-                list.appendChild(container);
+                return item;
             });
+            callback(products);
         })
-        .catch(error => console.error("Error loading the json file:", error));
+        .catch(err => console.error("Something went wrong with the Google Sheet:", err));
+}
+
+// This function will load the corosponding items to what the user selects on the website.
+function load_items_by_category(categoryName)
+{
+    load_product_info_sheets(sheet_url, function(products)
+    {
+        const list = document.getElementById("items_for_sale");
+
+        // This clears the list
+        list.innerHTML = "";
+
+        // This filters the items depending on what the user selects.
+        const filtered = products.filter(p => p.Category?.toLowerCase().trim() === categoryName.toLowerCase().trim());
+
+        console.log("Category to filter by:", categoryName);
+        console.log("Total products:", products.length);
+        console.log("Matching products:", filtered.length);
+
+        // This will make sections for the items
+        filtered.forEach(product => 
+        {
+            // This is the container for the item and the style of it
+            const container = document.createElement("div");
+            container.style.marginBottom = "20px";
+            container.style.width = "100%";
+
+            // This is the image of the item and the style for it
+            const img = document.createElement("img");
+            img.src = product.ImageURL;
+            img.alt = product.Name;
+            img.style.width = "15%";
+            console.log("Rendering:", product.ID, product.ImageURL);
+
+
+            // This will create the elements that display the products' name, price, and description
+            const name = document.createElement("h2");
+            name.textContent = product.Name;
+            const description = document.createElement("p");
+            description.textContent = product.Description;
+            const price = document.createElement("p");
+            price.textContent = `$${parseFloat(product.Price).toFixed(2)}`;
+
+            // Adds a horizontal ruling to make the site pretty
+            const horizontal = document.createElement("hr");
+
+            // Adds the button for the user to add an item to their cart
+            const buy_it = document.createElement("button");
+            buy_it.textContent = "Add to cart";
+            buy_it.addEventListener("click", () => 
+            {
+                const item = 
+                {
+                    id: product.ID,
+                    name: product.Name,
+                    price: parseFloat(product.Price),
+                    imageurl: product.ImageURL,
+                    quantity: 1,
+                    options: {}
+                };
+
+                // If there is a duplicate item the cart will up the quatity of the item presant, not add a new item.
+                const dupe_item = cart.find(i => i.id === item.id);
+                if (dupe_item)
+                {
+                    dupe_item.quantity += 1;
+                }
+                else
+                {
+                    cart.push(item);
+                }
+
+                // This will show a message that slide into the screen informing the user that the item was added to their cart.
+                localStorage.setItem("shopping_cart", JSON.stringify(cart));
+                show_slide_message(`${product.Name} was added to the cart.`);
+                location.reload();
+            });
+
+            // Actually adds the things to the website
+            container.appendChild(horizontal);
+            container.appendChild(name);
+            container.appendChild(img);
+            container.appendChild(description);
+            container.appendChild(price);
+            container.appendChild(buy_it);
+            list.appendChild(container);
+        });
+    });
 }
 
 // This function shows a popup when an item is added to the cart
@@ -170,7 +189,7 @@ const item_parameters = new URLSearchParams(window.location.search);
 const category = item_parameters.get("cat");
 if (category && document.getElementById("items_for_sale")) 
 {
-    load_items(`${category}.json`)
+    load_items_by_category(category);
 }
 
 // This function will handle updating the cart
@@ -210,7 +229,6 @@ function update_cart()
         deleteOneButton.textContent = "Delete Item";
         deleteOneButton.addEventListener("click", () =>
         {
-
             cart.splice(index, 1);
             localStorage.setItem("shopping_cart", JSON.stringify(cart));
 
