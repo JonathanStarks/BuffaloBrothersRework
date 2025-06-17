@@ -116,11 +116,11 @@ function getOptionsHTML(id, index)
             alert("Uh oh, somthing went wrong with the ID of the item!");
             return "";
         }
-    // If the id corosponds to a 1911 grip have these options
-    if (id.startsWith("1911"))
+    // If the id corosponds to a grip the site will have these options
+    if (id.startsWith("1911") || id.startsWith("CNG") || id.startsWith("CAG") || id.startsWith("BDE") || id.startsWith("SAA") || id.startsWith("SAB") || id.startsWith("DER") || id.startsWith("PPG") || id.startsWith("HER") || id.startsWith("RUG") || id.startsWith("SCH") || id.startsWith("SWG") || id.startsWith("REM"))
     {
         return`
-        <label> Grip Texture:
+        <label> Grip Color:
             <select id="color_${index}">
                 <option value="white" data-price="0">White</option>
                 <option value="ivory" data-price="0">Ivory</option>
@@ -188,6 +188,26 @@ function getOptionsHTML(id, index)
         </label>
         `;
     }
+
+    // If the id is for the medallion section, display these options
+    else if (id.startsWith("MED"))
+    {
+        return `
+        <label> Finish:
+            <select id="finish_${index}">
+                <option value="tin" data-price="0">Tin/Silver (+$0)</option>
+                <option value="gold" data-price="10">Gold Plated (+$10)</option>
+            </select>
+        </label>
+        <br>
+        <label> Backing:
+            <select id="backing_${index}">
+                <option value="none" data-price="0">None (+$0)</option>
+                <option value="chicago_screw" data-price="2">Chicago Screw (+$2)</option>
+            </select>
+        </label>
+        `;
+    }
     return "";
 }
 
@@ -206,7 +226,7 @@ cart.forEach((item, index) =>
     // An empty object to store the information about the items in the cart
     const selected_options = {};
 
-    if (item.id.startsWith("1911"))
+    if (item.id.startsWith("1911") || item.id.startsWith("SAA") || item.id.startsWith("SAB") || item.id.startsWith("BDE") || item.id.startsWith ("CNG") || item.id.startsWith("CAG") || item.id.startsWith("DER") || item.id.startsWith("PPG") || item.id.startsWith("HER") || item.id.startsWith("RUG") || item.id.startsWith("SCH") || item.id.startsWith("SWG") || item.id.startsWith("REM"))
     {
         selected_options.texture = document.getElementById("color_" + index).value;
         selected_options.finish = document.getElementById("finish_" + index).value;
@@ -224,7 +244,11 @@ cart.forEach((item, index) =>
         selected_options.strap = document.getElementById("strap_" + index).value;
         selected_options.finish = document.getElementById ("finish_" + index).value;
     }
-
+    else if (item.id.startsWith("MED"))
+    {
+        selected_options.finish = document.getElementById("finish_" + index).value;
+        selected_options.backing = document.getElementById("backing_" + index).value;
+    }
     item.options = selected_options;
 });
 

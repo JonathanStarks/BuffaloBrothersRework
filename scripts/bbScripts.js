@@ -157,6 +157,14 @@ function load_items_by_category(categoryName)
                 localStorage.setItem("shopping_cart", JSON.stringify(cart));
                 show_slide_message(`${product.Name} was added to the cart.`);
                 update_cart();
+                if (item.id.startsWith("CNG"))
+                {
+                    alert("Due to the number of backstrap variations on '51 navies, the best way to determine which of our navy grips will fit your gun is to trace around either the backstrap or the grip that is currently on your gun and MAIL that tracing to us. There will still be fitting required (see the \"Fitting Information\" on the Grip home page). At the very least, you should include information about your gun such as, maker, year of manufacture if possible, and any other markings that may be on the gun; however the tracing is the only sure way of getting the correct grip. Please contact us for more information.");
+                }
+                if (item.id.startsWith("RUG"))
+                {
+                    alert("Grips for the Ruger Vaquero and various other Ruger models. Note: These are NOT applicable to the Ruger NEW Vaquero. Please see the SAA selections for grips for your Ruger New Vaqueros");
+                }
             });
 
             // Actually adds the things to the website
