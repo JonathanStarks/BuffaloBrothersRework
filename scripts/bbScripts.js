@@ -96,9 +96,9 @@ function load_items_by_category(categoryName)
         // This filters the items depending on what the user selects.
         const filtered = products.filter(p => p.Category?.toLowerCase().trim() === categoryName.toLowerCase().trim());
 
-        console.log("Category to filter by:", categoryName);
-        console.log("Total products:", products.length);
-        console.log("Matching products:", filtered.length);
+        // console.log("Category to filter by:", categoryName);
+        // console.log("Total products:", products.length);
+        // console.log("Matching products:", filtered.length);
 
         // This will make sections for the items
         filtered.forEach(product => 
@@ -112,8 +112,15 @@ function load_items_by_category(categoryName)
             const img = document.createElement("img");
             img.src = product.ImageURL;
             img.alt = product.Name;
-            img.style.width = "15%";
-            console.log("Rendering:", product.ID, product.ImageURL);
+            if (window.innerWidth <= 700)
+            {
+                img.style.width = "50%";
+            }
+            else
+            {
+                img.style.width = "18%";
+            }
+            // console.log("Rendering:", product.ID, product.ImageURL);
 
 
             // This will create the elements that display the products' name, price, and description

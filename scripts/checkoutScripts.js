@@ -351,6 +351,11 @@ function get_additional_cost(id, options)
         if (options.strap === "yes") premium_cost += 5;
         if (options.finish === "gold") premium_cost += 5;
     }
+    else if (id.startsWith("MED"))
+    {
+        if (options.finish === "gold") premium_cost += 10;
+        if (options.backing === "chicago_screw") premium_cost += 2;
+    }
 
     return premium_cost;
 }
