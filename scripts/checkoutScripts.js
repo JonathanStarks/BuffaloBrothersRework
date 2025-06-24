@@ -326,10 +326,23 @@ paypal.Buttons({
 
     onApprove: function(data, actions)
     {
-        return actions.order.capture().then(function (details) {
-            alert('transaction completed by ' + details.payer.name.given_name);
+        return actions.order.capture().then(details => {
+            // Sends the order detail to the server
+            fetch('sendorder.php', {
+                method: 'POST',
+                headers: { 'Content-Type': "application/json" },
+                body: JSON.stringify(details)
+            }).then(response => {
+                if (!response.ok) {
+                    console.error("Email Failed to send:", response.statusText);
+                }
+            }).catch(err => {
+                console.error("Network error sending order to backend:", err);
+            });
+
+            // clears the cart and sends the user to the thank you page
             localStorage.removeItem("shopping_cart");
-            location.reload();
+            window.location.href = "thankyou.html";
         });
     }
 }).render('#paypal_button_section');
