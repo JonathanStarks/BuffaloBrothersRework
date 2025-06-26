@@ -24,34 +24,43 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $body .= "Email: ".$order["payer"]["email_address"]."\n";
 
     // This is the shipping information
+    $body = "🧾 Buffalo Brothers Order Summary\n\n";
+    $body .= "Order ID: " . ($order['id'] ?? 'N/A') . "\n";
+    $body .= "Payer: " . ($order['payer']['name']['given_name'] ?? '') . " " . ($order['payer']['name']['surname'] ?? '') . "\n";
+    $body .= "Email: " . ($order['payer']['email_address'] ?? '') . "\n";
     $body .= "Shipping Address:\n";
-    $body .= $order["purchase_units"][0]["shipping"]["address"]["address_line_1"]."\n";
-    $body .= $order["purchase_units"][0]["shipping"]["address"]["admin_area_2"].", ";
-    $body .= $order["purchase_units"][0]["shipping"]["address"]["admin_area_1"]." ";
-    $body .= $order["purchase_units"][0]["shipping"]["address"]["postal_code"]."\n\n";
+    $body .= ($order['shipping']['address']['address_line_1'] ?? '') . "\n";
+    $body .= ($order['shipping']['address']['admin_area_2'] ?? '') . ", ";
+    $body .= ($order['shipping']['address']['admin_area_1'] ?? '') . " ";
+    $body .= ($order['shipping']['address']['postal_code'] ?? '') . "\n\n";
 
     // This is the items that the customer bought
-    $bosy .= "Items:\n";
-    foreach ($order["purchase_units"][0]["items"] as $item) {
-        $body .= "- ".$item["name"]." x".$item["quantity"]." | $".$item["unit_amount"]["value"]."\n";
-        if (isset($item["description"])) {
-            $body .= " Description: ".$item["description"]."\n";
+    $body .= "Items Ordered:\n";
+
+    foreach ($order['items'] as $item) {
+        $body .= "- " . $item['name'] . " x" . $item['quantity'] . " | $" . $item['unit_amount']['value'] . "\n";
+        if (!empty($item['description'])) {
+            $body .= "  Description: " . $item['description'] . "\n";
         }
     }
 
     // Adds the total amount
-    $body .= "\nTotal: $".$order["purchase_units"][0]["amount"]["value"];
+    $body .= "\nTotal Paid: $" . ($order['total'] ?? 'N/A') . "\n";
+    $body .= "\nThank you for your order!";
 
     // Sends the email
     if (mail($to, $subject, $body, $headers)) {
         http_response_code(200);
         echo "Email sent successfully.";
+        exit;
     } else {
         http_response_code(500);
-        echo "Failed to sendemail.";
+        echo "Failed to send email.";
+        exit;
     }
 } else {
     // Blocks andy non-POST requests
     http_response_code(403);
     echo "Unauthorized access.";
+    exit;
 }
