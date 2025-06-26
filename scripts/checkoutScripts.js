@@ -359,7 +359,7 @@ paypal.Buttons({
             fetch('sendorder.php', {
                 method: 'POST',
                 headers: { 'Content-Type': "application/json" },
-                body: JSON.stringify(details)
+                body: JSON.stringify(full_order)
             }).then(response => {
                 if (!response.ok) {
                     console.error("Email Failed to send:", response.statusText);
