@@ -11,7 +11,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Sets up the information for sending emails
     $to = "sta21019@byui.edu";
     $subject = "New Order Recieved";
-    $headers = "Content-Type: text/plain; charset=UTF-8";
+    $headers = "From: orders@s1055231436.onlinehome.us\r\n";
+    $headers ="Reply-To: sta21019@byui.edu\r\n";
+    $headers = "Content-Type: text/plain; charset=UTF-8\r\n";
 
     // This is the start of the body of the email
     $body = "New order recieved from PayPal:\n\n";
