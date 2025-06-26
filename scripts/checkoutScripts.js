@@ -327,6 +327,34 @@ paypal.Buttons({
     onApprove: function(data, actions)
     {
         return actions.order.capture().then(details => {
+            // Gets the cart for the email
+            const cart = JSON.parse(localStorage.getItem("shopping_cart")) || [];
+
+            // Sets the items with their final prices
+            const final_items = cart.map((item, index) => {
+                const options = item.options || {};
+                const description = Object.entries(options).map(([key, val]) => `${key}: ${val}`).join(", ");
+
+                const added_cost = get_additional_cost(item.name, options);
+                const unit_price = (item.price + added_cost).toFixed(2);
+
+                return {
+                    name: item.name,
+                    quantity: item.quantity,
+                    unit_amount: { value: unit_price },
+                    description: description
+                };
+            });
+
+            const total = final_items.reduce((sum, item) => sum + item.quantity * parseFloat(item.unit_amount.value), 0);
+
+            // Merges the order info with the cart info
+            const full_order = {
+                ...details,
+                items:final_items,
+                total:total.toFixed(2),
+            };
+
             // Sends the order detail to the server
             fetch('sendorder.php', {
                 method: 'POST',
