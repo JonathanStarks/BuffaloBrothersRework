@@ -273,6 +273,10 @@ paypal.Buttons({
             if (strap) options.strap = strap.value;
 
             item.options = options;
+
+            // Calculates the premium price
+            const added_cost = get_additional_cost(item.id, options);
+            item.calculated_price = item.price + added_cost;
         });
 
         // The array to send to paypal
