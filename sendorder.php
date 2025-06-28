@@ -12,8 +12,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $to = "sta21019@byui.edu";
     $subject = "New Order Recieved";
     $headers = "From: orders@s1055231436.onlinehome.us\r\n";
-    $headers ="Reply-To: sta21019@byui.edu\r\n";
-    $headers = "Content-Type: text/plain; charset=UTF-8\r\n";
+    $headers .= "Reply-To: sta21019@byui.edu\r\n";
+    $headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
 
     // This is the start of the body of the email
     $body = "New order recieved from PayPal:\n\n";
@@ -24,7 +24,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $body .= "Email: ".$order["payer"]["email_address"]."\n";
 
     // This is the shipping information
-    $body = "🧾 Buffalo Brothers Order Summary\n\n";
+    $body .= "🧾 Buffalo Brothers Order Summary\n\n";
     $body .= "Order ID: " . ($order['id'] ?? 'N/A') . "\n";
     $body .= "Payer: " . ($order['payer']['name']['given_name'] ?? '') . " " . ($order['payer']['name']['surname'] ?? '') . "\n";
     $body .= "Email: " . ($order['payer']['email_address'] ?? '') . "\n";

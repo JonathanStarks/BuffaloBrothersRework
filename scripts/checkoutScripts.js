@@ -286,9 +286,6 @@ paypal.Buttons({
                 .map(([key, val]) => `${key}: ${val}`)
                 .join(", ");
         
-            // This will run the get additional cost function
-            // const added_cost = get_additional_cost(item.name, item.options);
-            // const unit_price = (item.price + added_cost).toFixed(2);
             const unit_price = (item.calculated_price || item.price).toFixed(2);
 
             // This is what will be put into the array.
@@ -340,8 +337,6 @@ paypal.Buttons({
                 const options = item.options || {};
                 const description = Object.entries(options).map(([key, val]) => `${key}: ${val}`).join(", ");
 
-                // const added_cost = get_additional_cost(item.name, options);
-                // const unit_price = (item.price + added_cost).toFixed(2);
                 const unit_price = (item.calculated_price || item.price).toFixed(2);
 
                 return {
