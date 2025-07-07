@@ -337,7 +337,9 @@ paypal.Buttons({
                 const options = item.options || {};
                 const description = Object.entries(options).map(([key, val]) => `${key}: ${val}`).join(", ");
 
-                const unit_price = (item.calculated_price || item.price).toFixed(2);
+                const added_cost = get_additional_cost(item.id, options);
+                // const unit_price = (item.calculated_price || item.price).toFixed(2);
+                const unit_price = (item.price + added_cost).toFixed(2);
 
                 return {
                     name: item.name,
@@ -348,19 +350,23 @@ paypal.Buttons({
             });
 
             const total = final_items.reduce((sum, item) => sum + item.quantity * parseFloat(item.unit_amount.value), 0);
+            const captured_unit = details.purchase_units?.[0];
+            const captured_items = captured_unit?.items || [];
 
-            // Merges the order info with the cart info
-            const full_order = {
-                ...details,
-                items:final_items,
-                total:total.toFixed(2),
+            // Makes the info for the email with the right data
+            const custom_order = {
+                orderID: details.id,
+                payer: details.payer,
+                shipping: captured_unit?.shipping || {},
+                items: captured_items,
+                total: captured_unit?.amount?.value || "0.00"
             };
 
             // Sends the order detail to the server
-            fetch('sendorder.php', {
-                method: 'POST',
-                headers: { 'Content-Type': "application/json" },
-                body: JSON.stringify(full_order)
+            fetch("sendorder.php", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(custom_order)
             }).then(response => {
                 if (!response.ok) {
                     console.error("Email Failed to send:", response.statusText);
