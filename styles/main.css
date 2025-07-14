@@ -43,9 +43,9 @@
     outline: 1px solid;
     background-color: #bcbcbc;
 }
-.logo img
+.navbar img
 {
-    width: 100%;
+    max-width: 100%;
 }
 #cart_summary
 {
