@@ -60,6 +60,11 @@ function find_baseprice(id)
 // This will be the google sheet that the item info comes from
 const sheet_url = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTmc0A0mQd3XZFCgCUQZV6S-zV8OAN0nz8v2YKTFhnbPc2t5ujOkoNra7MMDKEnTnuB3XxfEy2z7QVM/pub?gid=0&single=true&output=csv";
 
+// These are parameters to be used in the page navigation
+const items_per_page = 15;
+let items_in_catagory = [];
+let current_page = 1;
+
 // This function uses the info from the google sheet and interperets it for the website to use
 function load_product_info_sheets(sheet_url, callback)
 {
@@ -83,6 +88,129 @@ function load_product_info_sheets(sheet_url, callback)
         .catch(err => console.error("Something went wrong with the Google Sheet:", err));
 }
 
+// This function will be used to know what items to show on the current page
+function display_page(page)
+{
+    const list = document.getElementById("items_for_sale");
+    list.innerHTML = "";
+
+    // This is where to look for the beginning of the items to show
+    const start = (page - 1) * items_per_page;
+    // This is where the end of the items to be shown on the page will be
+    const end = page * items_per_page;
+    // This is the range that will be used for creating the items
+    const items_to_show = items_in_catagory.slice(start, end);
+
+    // This will make sections for the items
+    items_to_show.forEach(product => 
+    {
+        // This is the container for the item and the style of it
+        const container = document.createElement("div");
+        container.style.marginBottom = "20px";
+        container.style.width = "100%";
+
+        // This is the image of the item and the style for it
+        const img = document.createElement("img");
+        img.src = product.ImageURL;
+        img.alt = product.Name;
+        if (window.innerWidth <= 700)
+        {
+            img.style.width = "50%";
+        }
+        else
+        {
+            img.style.width = "18%";
+        }
+
+        // This will create the elements that display the products' name, price, and description
+        const name = document.createElement("h2");
+        name.textContent = product.Name;
+        const description = document.createElement("p");
+        description.textContent = product.Description;
+        const price = document.createElement("p");
+        price.textContent = `$${parseFloat(product.Price).toFixed(2)}`;
+
+        // Adds a horizontal ruling to make the site pretty
+        const horizontal = document.createElement("hr");
+
+        // Adds the button for the user to add an item to their cart
+        const buy_it = document.createElement("button");
+        buy_it.textContent = "Add to cart";
+        buy_it.addEventListener("click", () => 
+        {
+            const item = 
+            {
+                id: product.ID,
+                name: product.Name,
+                price: parseFloat(product.Price),
+                imageurl: product.ImageURL,
+                quantity: 1,
+                options: {}
+            };
+
+            // If there is a duplicate item the cart will up the quatity of the item presant, not add a new item.
+            const dupe_item = cart.find(i => i.id === item.id);
+            if (dupe_item)
+            {
+                dupe_item.quantity += 1;
+            }
+            else
+            {
+                cart.push(item);
+            }
+
+            // This will show a message that slide into the screen informing the user that the item was added to their cart.
+            localStorage.setItem("shopping_cart", JSON.stringify(cart));
+            show_slide_message(`${product.Name} was added to the cart.`);
+            update_cart();
+            if (item.id.startsWith("CNG"))
+            {
+                alert("Due to the number of backstrap variations on '51 navies, the best way to determine which of our navy grips will fit your gun is to trace around either the backstrap or the grip that is currently on your gun and MAIL that tracing to us. There will still be fitting required (see the \"Fitting Information\" on the Grip home page). At the very least, you should include information about your gun such as, maker, year of manufacture if possible, and any other markings that may be on the gun; however the tracing is the only sure way of getting the correct grip. Please contact us for more information.");
+            }
+            if (item.id.startsWith("RUG"))
+            {
+                alert("Grips for the Ruger Vaquero and various other Ruger models. Note: These are NOT applicable to the Ruger NEW Vaquero. Please see the SAA selections for grips for your Ruger New Vaqueros");
+            }
+        });
+
+        // Actually adds the things to the website
+        container.appendChild(horizontal);
+        container.appendChild(name);
+        container.appendChild(img);
+        container.appendChild(description);
+        container.appendChild(price);
+        container.appendChild(buy_it);
+        list.appendChild(container);
+    });
+
+    // Calls the function that will determine the current page, if the user can go back a page, and if the user can go forward a page
+    page_navigation_control();
+}
+
+// This function determines how the user can navigate the pages of the items.
+function page_navigation_control()
+{
+    const container = document.getElementById("page_navigation");
+    if (!container) return;
+
+    container.innerHTML = "";
+
+    // sets to total allowed pages to the number of items in the category divided by the number of items shown per page rounded up
+    const total_pages = Math.ceil(items_in_catagory.length / items_per_page);
+    for (let i = 1; i <= total_pages; i++)
+    {
+        const btn = document.createElement("button");
+        btn.textContent = i;
+        btn.disabled = (i === current_page);
+        btn.addEventListener("click", () => {
+            current_page = i;
+            display_page(i);
+            window.scrollTo({ top: 0, behavior: "smooth"})
+        });
+        container.appendChild(btn);
+    }
+}
+
 // This function will load the corosponding items to what the user selects on the website.
 function load_items_by_category(categoryName)
 {
@@ -95,94 +223,10 @@ function load_items_by_category(categoryName)
 
         // This filters the items depending on what the user selects.
         const filtered = products.filter(p => p.Category?.toLowerCase().trim() === categoryName.toLowerCase().trim());
+        items_in_catagory = filtered;
+        current_page = 1;
 
-        // console.log("Category to filter by:", categoryName);
-        // console.log("Total products:", products.length);
-        // console.log("Matching products:", filtered.length);
-
-        // This will make sections for the items
-        filtered.forEach(product => 
-        {
-            // This is the container for the item and the style of it
-            const container = document.createElement("div");
-            container.style.marginBottom = "20px";
-            container.style.width = "100%";
-
-            // This is the image of the item and the style for it
-            const img = document.createElement("img");
-            img.src = product.ImageURL;
-            img.alt = product.Name;
-            if (window.innerWidth <= 700)
-            {
-                img.style.width = "50%";
-            }
-            else
-            {
-                img.style.width = "18%";
-            }
-            // console.log("Rendering:", product.ID, product.ImageURL);
-
-
-            // This will create the elements that display the products' name, price, and description
-            const name = document.createElement("h2");
-            name.textContent = product.Name;
-            const description = document.createElement("p");
-            description.textContent = product.Description;
-            const price = document.createElement("p");
-            price.textContent = `$${parseFloat(product.Price).toFixed(2)}`;
-
-            // Adds a horizontal ruling to make the site pretty
-            const horizontal = document.createElement("hr");
-
-            // Adds the button for the user to add an item to their cart
-            const buy_it = document.createElement("button");
-            buy_it.textContent = "Add to cart";
-            buy_it.addEventListener("click", () => 
-            {
-                const item = 
-                {
-                    id: product.ID,
-                    name: product.Name,
-                    price: parseFloat(product.Price),
-                    imageurl: product.ImageURL,
-                    quantity: 1,
-                    options: {}
-                };
-
-                // If there is a duplicate item the cart will up the quatity of the item presant, not add a new item.
-                const dupe_item = cart.find(i => i.id === item.id);
-                if (dupe_item)
-                {
-                    dupe_item.quantity += 1;
-                }
-                else
-                {
-                    cart.push(item);
-                }
-
-                // This will show a message that slide into the screen informing the user that the item was added to their cart.
-                localStorage.setItem("shopping_cart", JSON.stringify(cart));
-                show_slide_message(`${product.Name} was added to the cart.`);
-                update_cart();
-                if (item.id.startsWith("CNG"))
-                {
-                    alert("Due to the number of backstrap variations on '51 navies, the best way to determine which of our navy grips will fit your gun is to trace around either the backstrap or the grip that is currently on your gun and MAIL that tracing to us. There will still be fitting required (see the \"Fitting Information\" on the Grip home page). At the very least, you should include information about your gun such as, maker, year of manufacture if possible, and any other markings that may be on the gun; however the tracing is the only sure way of getting the correct grip. Please contact us for more information.");
-                }
-                if (item.id.startsWith("RUG"))
-                {
-                    alert("Grips for the Ruger Vaquero and various other Ruger models. Note: These are NOT applicable to the Ruger NEW Vaquero. Please see the SAA selections for grips for your Ruger New Vaqueros");
-                }
-            });
-
-            // Actually adds the things to the website
-            container.appendChild(horizontal);
-            container.appendChild(name);
-            container.appendChild(img);
-            container.appendChild(description);
-            container.appendChild(price);
-            container.appendChild(buy_it);
-            list.appendChild(container);
-        });
+        display_page(current_page);
     });
 }
 
