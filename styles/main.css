@@ -43,6 +43,10 @@
     outline: 1px solid;
     background-color: #bcbcbc;
 }
+.logo img
+{
+    width: 100%;
+}
 #cart_summary
 {
     text-align: center;
