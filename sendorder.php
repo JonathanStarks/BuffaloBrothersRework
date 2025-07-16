@@ -11,7 +11,6 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // These are the keys from the js file
     $order_id = $order['orderID'] ?? 'N/A';
     $payer = $order['payer'] ?? [];
-    // $shipping = $order['purchase_units'][0]['shipping']['address'] ?? [];
     $items = $order['items'] ?? [];
     $total = $order['total'] ?? 'N/A';
 
@@ -44,18 +43,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
     foreach ($items as $item) {
         $name = $item['name'] ?? 'Unnamed';
+        $sku = $item['sku'] ?? 'No number';
         $qty = $item['quantity'] ?? 1;
         $price = floatval($item['unit_amount']['value'] ?? '0.00');
         $desc = $item['description'] ?? '';
         
-        $body .= "- $qty x $name @ $" . number_format($price, 2) . " each\n";
+        $body .= "- $qty x $sku $name @ $" . number_format($price, 2) . " each\n";
 
         if (!empty($desc)) {
             $body .= "  Customizations: $desc\n";
         }
 
         $lineTotal = $price * $qty;
-        $body .= "  Line Total: $" . number_format($lineTotal, 2) . "\n\n";
+        $body .= "  Total: $" . number_format($lineTotal, 2) . "\n\n";
 
         $totalAmount += $lineTotal;
     }

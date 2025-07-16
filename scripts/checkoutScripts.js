@@ -291,6 +291,7 @@ paypal.Buttons({
             // This is what will be put into the array.
             return {
                 name: item.name,
+                sku: item.id,
                 description: description,
                 unit_amount: {currency_code: "USD", value: unit_price},
                 quantity: item.quantity
@@ -343,8 +344,9 @@ paypal.Buttons({
 
                 return {
                     name: item.name,
+                    sku: item.id,
                     quantity: item.quantity,
-                    unit_amount: { value: unit_price },
+                    unit_amount: {currency_code: "USD", value: unit_price },
                     description: description
                 };
             });
