@@ -290,8 +290,7 @@ paypal.Buttons({
 
             // This is what will be put into the array.
             return {
-                name: item.name,
-                sku: item.id,
+                name: `${item.id} - ${item.name}`,
                 description: description,
                 unit_amount: {currency_code: "USD", value: unit_price},
                 quantity: item.quantity
@@ -339,12 +338,10 @@ paypal.Buttons({
                 const description = Object.entries(options).map(([key, val]) => `${key}: ${val}`).join(", ");
 
                 const added_cost = get_additional_cost(item.id, options);
-                // const unit_price = (item.calculated_price || item.price).toFixed(2);
                 const unit_price = (item.price + added_cost).toFixed(2);
 
                 return {
-                    name: item.name,
-                    sku: item.id,
+                    name: `${item.id} - ${item.name}`,
                     quantity: item.quantity,
                     unit_amount: {currency_code: "USD", value: unit_price },
                     description: description
@@ -360,10 +357,11 @@ paypal.Buttons({
                 orderID: details.id,
                 payer: details.payer,
                 shipping: captured_unit?.shipping || {},
-                items: captured_items,
-                total: captured_unit?.amount?.value || "0.00"
+                items: final_items,
+                total: final_items.reduce((sum, item) => sum + item.quantity * parseFloat(item.unit_amount.value), 0).toFixed(2)
             };
 
+            console.log("Sending custom order to the server:", custom_order);
             // Sends the order detail to the server
             fetch("sendorder.php", {
                 method: "POST",
@@ -372,14 +370,14 @@ paypal.Buttons({
             }).then(response => {
                 if (!response.ok) {
                     console.error("Email Failed to send:", response.statusText);
+                } else {
+                    // clears the cart and sends the user to the thank you page
+                    localStorage.removeItem("shopping_cart");
+                    window.location.href = "thankyou.html";
                 }
             }).catch(err => {
                 console.error("Network error sending order to backend:", err);
             });
-
-            // clears the cart and sends the user to the thank you page
-            localStorage.removeItem("shopping_cart");
-            window.location.href = "thankyou.html";
         });
     }
 }).render('#paypal_button_section');
